@@ -10,6 +10,7 @@ TIMEZONE = 'Europe/Berlin'
 AWS_ACCESS_KEY = 'AKIA3IEKS2VZEFV6QAXB'
 AWS_SECRET_KEY = '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'
 AWS_REGION = 'eu-west-1'
+NAME = 'KYLIN'
 
 print('Start cluster check')
 
@@ -26,10 +27,10 @@ clusters = emr.list_clusters(
 )
 
 if clusters['Clusters'] is not None:
+    
     for cluster in clusters['Clusters']:
-        print('Terminating Cluster: %s active since: %s' % (cluster['Id'], cluster['Status']['Timeline']['CreationDateTime']))
-        emr.terminate_job_flows(
-            JobFlowIds=[cluster['Id']]
-        )
+        if NAME in cluster['Name'].upper():
+            print('Terminating Cluster: %s active since: %s' % (cluster['Id'], cluster['Status']['Timeline']['CreationDateTime']))
+            emr.terminate_job_flows(JobFlowIds=[cluster['Id']])
 
 print('cluster check done')
